@@ -10,6 +10,6 @@ def read_data(file_path):
     elif file_path.endswith('.xlsx'):
         return pd.read_excel(file_path)
     elif file_path.endswith('.json'):
-        return pd.read_json(file_path)
+        return pd.read_json(file_path, lines=True)
     else:
         return 'Invalid file type'

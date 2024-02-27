@@ -16,7 +16,7 @@ def read_data(file_path):
 
 
 # Function checks for missing data in a dataframe
-def missing_data(df):
+def count_missing_data(df):
     # check for missing data
     missing = df.isna().sum()
     return missing
@@ -28,12 +28,12 @@ def dtype(df):
     return dtypes
 
 # Function checks for duplicate data in a dataframe
-def duplicate_data(df):
+def count_duplicate_data(df):
     # check for duplicate data
     duplicate = df.duplicated().sum()
     return duplicate
 
-def unique_values(df):
+def count_unique_values(df):
     # check for unique values
     unique = df.nunique()
     return unique

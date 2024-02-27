@@ -5,10 +5,10 @@ This project is a final year dissertation project where the goal is to develop a
 ## Datasets
 
 - [] backend
-  - [] load in dataset
-    - [] csv
-    - [] excel
-    - [] json
+  - [x] load in dataset
+    - [x] csv
+    - [x] excel
+    - [x] json
   - [] Check for missing data
     - [] check which collumns have missing data
     - [] check which rows have missing data

@@ -9,9 +9,9 @@ This project is a final year dissertation project where the goal is to develop a
     - [x] csv
     - [x] excel
     - [x] json
-  - [] Check for missing data
-    - [] check which collumns have missing data
-    - [] check which rows have missing data
+  - [x] Check for missing data
+    - [x] check which collumns have missing data
+    - [x] check which rows have missing data
   - [] check data types
     - [] numerical
       - [] integer

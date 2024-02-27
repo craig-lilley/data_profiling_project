@@ -13,3 +13,9 @@ def read_data(file_path):
         return pd.read_json(file_path, lines=True)
     else:
         return 'Invalid file type'
+
+   
+def missing_data(df):
+    # check for missing data
+    missing = df.isna().sum()
+    return missing

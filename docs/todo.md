@@ -12,16 +12,18 @@ This project is a final year dissertation project where the goal is to develop a
   - [x] Check for missing data
     - [x] check which collumns have missing data
     - [x] check which rows have missing data
-  - [] check data types
-    - [] numerical
-      - [] integer
-      - [] float
-    - [] string
-    - [] datetime
-    - [] char
+  - [x] check data types
+    - [x] numerical
+      - [x] integer
+      - [x] float
+    - [x] string
+    - [x] datetime
+    - [x] char
     - [] other
-  - [] check for duplicates
-    - [] check by row
+  - [] checks for unique data
+    - [] counts number of unique values in each column
+  - [x] check for duplicates
+    - [x] check by row
     - [] check by column
   - [] check for out of range
     - [] obvious ranges (number of days in month or number of hours in day)

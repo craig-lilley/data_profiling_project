@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 
 
-# create a function that checks the type of file and then reads the data into a pandas dataframe the acceptable 
-# file types should be csv, excel, and json
+#Function checks the type of file and then reads the data into a pandas dataframe the acceptable 
+# file types are csv, excel, and json
 def read_data(file_path):
     if file_path.endswith('.csv'):
         return pd.read_csv(file_path)
@@ -14,8 +14,21 @@ def read_data(file_path):
     else:
         return 'Invalid file type'
 
-   
+
+# Function checks for missing data in a dataframe
 def missing_data(df):
     # check for missing data
     missing = df.isna().sum()
     return missing
+
+# Function checks for data types in a dataframe
+def dtype(df):
+    # check for data types
+    dtypes = df.dtypes
+    return dtypes
+
+# Function checks for duplicate data in a dataframe
+def duplicate_data(df):
+    # check for duplicate data
+    duplicate = df.duplicated().sum()
+    return duplicate

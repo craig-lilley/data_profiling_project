@@ -32,3 +32,8 @@ def duplicate_data(df):
     # check for duplicate data
     duplicate = df.duplicated().sum()
     return duplicate
+
+def unique_values(df):
+    # check for unique values
+    unique = df.nunique()
+    return unique

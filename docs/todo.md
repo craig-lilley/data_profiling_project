@@ -26,11 +26,13 @@ This project is a final year dissertation project where the goal is to develop a
     - [x] check by row
     - [] check by column
   - [] check for out of range
-    - [] obvious ranges (number of days in month or number of hours in day)
+    - [] real date
+    - [] real time
     - [] user defined ranges
   - [] check for format issues
     - [] obvious formats (phone numbers, post codes)
     - [] user defined formats
+  - [] check for correlations
 - [] frontend
   - [] data input
     - [] drag and drop

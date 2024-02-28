@@ -37,3 +37,9 @@ def count_unique_values(df):
     # check for unique values
     unique = df.nunique()
     return unique
+
+# Function checks for the correlation between columns in a dataframe
+def correlation(df):
+    numeric_df = df.select_dtypes(include=['float64', 'int64'])
+    corr = numeric_df.corr()
+    return corr

@@ -1,5 +1,5 @@
 # We will write our test cases in this file
-from backend.data_processing import read_data, count_missing_data, dtype, count_duplicate_data, count_unique_values
+from backend.data_processing import read_data, count_missing_data, dtype, count_duplicate_data, count_unique_values, correlation
 import pandas as pd
 
 test_csv = "data/imdb_top_1000.csv"
@@ -80,3 +80,19 @@ def test_count_unique_values():
     # tests on a json file
     assert count_unique_values(df_json).equals(df_json.nunique())
     #print(unique_values(df_json))
+
+# tests correlation function
+def test_correlation():
+    # reads in the data
+    df_csv = read_data(test_csv).select_dtypes(include=['float64', 'int64'])
+    df_excel = read_data(test_excel).select_dtypes(include=['float64', 'int64'])
+    df_json = read_data(test_json).select_dtypes(include=['float64', 'int64'])
+    # tests on a csv file
+    assert correlation(df_csv).equals(df_csv.corr())
+    print(correlation(df_csv))
+    # tests on a excel file
+    assert correlation(df_excel).equals(df_excel.corr())
+    print(correlation(df_excel))
+    # tests on a json file
+    assert correlation(df_json).equals(df_json.corr())
+    print(correlation(df_json))

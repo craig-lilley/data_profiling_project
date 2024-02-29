@@ -19,7 +19,7 @@ This project is a final year dissertation project where the goal is to develop a
     - [x] string
     - [x] datetime
     - [x] char
-    - [] other
+    - [x] other
   - [] checks for unique data
     - [] counts number of unique values in each column
   - [x] check for duplicates

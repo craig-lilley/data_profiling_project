@@ -1,10 +1,10 @@
 # We will write our test cases in this file
 from backend.data_processing import read_data, count_missing_data, check_dtype, count_duplicate_data, count_unique_values, correlation, investigate_dtype
-
+import pytest
 import pandas as pd
 
 test_csv = "data/imdb_top_1000.csv"
-test_excel = "data/bfi-weekend-box-office-report-2024-02-16-18.xlsx"
+test_excel = "data/1617fedschoolcodelist.xls"
 test_json = "data/News_Category_Dataset_v3.json"
 
 # tests read data function
@@ -50,21 +50,28 @@ def test_check_dtype():
     assert check_dtype(df_json).equals(df_json.dtypes)
     #print(dtype(df_json))
 
-#tests investigate_dtype function
-def test_investigate_dtype():
-    # reads in the data
-    df_csv = read_data(test_csv)
-    df_excel = read_data(test_excel)
-    df_json = read_data(test_json)
-    # tests on a csv file
-    #assert investigate_dtype(df_csv).equals(df_csv.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
-    print(investigate_dtype(df_csv))
-    # tests on a excel file
-    #assert investigate_dtype(df_excel).equals(df_excel.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
-    print(investigate_dtype(df_excel))
-    # tests on a json file
-    #assert investigate_dtype(df_json).equals(df_json.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
-    print(investigate_dtype(df_json))
+
+# Testing for investigate_dtype function
+data = {'col1': ['string1', 'string2', 1, 2.5],
+        'col2': [1.0, 2.0, None, 'string']}
+df = pd.DataFrame(data)
+@pytest.mark.parametrize('col_name, expected_counts', [
+    ('col1', {'str': 0.5, 'int': 0.25, 'float': 0.25}),
+    ('col2', {'float': 0.5, 'NoneType': 0.25, 'str': 0.25})
+])
+def test_investigate_dtype(col_name, expected_counts):
+    # Create a smaller DataFrame with the specified column for testing
+    test_df = df[[col_name]]
+
+    # Call the function and get the result
+    result_df = investigate_dtype(test_df)
+
+    # Get the data type counts for the specific column
+    actual_counts = result_df.iloc[0].to_dict()
+
+    # Assert that the actual and expected counts are equal
+    assert actual_counts == expected_counts, f"Counts for {col_name} are not as expected: {actual_counts} != {expected_counts}"
+
 
 # tests count duplicate data function
 def test_count_duplicate_data():

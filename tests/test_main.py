@@ -1,5 +1,6 @@
 # We will write our test cases in this file
-from backend.data_processing import read_data, count_missing_data, dtype, count_duplicate_data, count_unique_values, correlation
+from backend.data_processing import read_data, count_missing_data, check_dtype, count_duplicate_data, count_unique_values, correlation, investigate_dtype
+
 import pandas as pd
 
 test_csv = "data/imdb_top_1000.csv"
@@ -34,20 +35,36 @@ def test_count_missing_data():
     #print(missing_data(df_json))
 
 # tests dtype function
-def test_dtype():
+def test_check_dtype():
     # reads in the data
     df_csv = read_data(test_csv)
     df_excel = read_data(test_excel)
     df_json = read_data(test_json)
     # tests on a csv file
-    assert dtype(df_csv).equals(df_csv.dtypes)
+    assert check_dtype(df_csv).equals(df_csv.dtypes)
     #print(dtype(df_csv))
     # tests on a excel file
-    assert dtype(df_excel).equals(df_excel.dtypes)
+    assert check_dtype(df_excel).equals(df_excel.dtypes)
     #print(dtype(df_excel))
     # tests on a json file
-    assert dtype(df_json).equals(df_json.dtypes)
+    assert check_dtype(df_json).equals(df_json.dtypes)
     #print(dtype(df_json))
+
+#tests investigate_dtype function
+def test_investigate_dtype():
+    # reads in the data
+    df_csv = read_data(test_csv)
+    df_excel = read_data(test_excel)
+    df_json = read_data(test_json)
+    # tests on a csv file
+    #assert investigate_dtype(df_csv).equals(df_csv.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
+    print(investigate_dtype(df_csv))
+    # tests on a excel file
+    #assert investigate_dtype(df_excel).equals(df_excel.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
+    print(investigate_dtype(df_excel))
+    # tests on a json file
+    #assert investigate_dtype(df_json).equals(df_json.applymap(type).apply(lambda x: x.value_counts(normalize=True)))
+    print(investigate_dtype(df_json))
 
 # tests count duplicate data function
 def test_count_duplicate_data():
@@ -89,10 +106,10 @@ def test_correlation():
     df_json = read_data(test_json).select_dtypes(include=['float64', 'int64'])
     # tests on a csv file
     assert correlation(df_csv).equals(df_csv.corr())
-    print(correlation(df_csv))
+    #print(correlation(df_csv))
     # tests on a excel file
     assert correlation(df_excel).equals(df_excel.corr())
-    print(correlation(df_excel))
+    #print(correlation(df_excel))
     # tests on a json file
     assert correlation(df_json).equals(df_json.corr())
-    print(correlation(df_json))
+    #print(correlation(df_json))

@@ -32,7 +32,7 @@ This project is a final year dissertation project where the goal is to develop a
   - [] check for format issues
     - [] obvious formats (phone numbers, post codes)
     - [] user defined formats
-  - [] check for correlations
+  - [x] check for correlations
 - [] frontend
   - [] data input
     - [] drag and drop

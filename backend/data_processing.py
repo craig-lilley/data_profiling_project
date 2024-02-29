@@ -22,10 +22,24 @@ def count_missing_data(df):
     return missing
 
 # Function checks for data types in a dataframe
-def dtype(df):
+def check_dtype(df):
     # check for data types
     dtypes = df.dtypes
     return dtypes
+
+def investigate_dtype(df):
+    result = []
+
+    for col in df.columns:
+        types = df[col].map(type)
+        type_counts = types.value_counts(normalize=True)
+        type_counts_df = type_counts.to_frame().T
+        type_counts_df.columns = [str(col).split("'")[1] for col in type_counts_df.columns]
+        type_counts_df.index = [col]
+        result.append(type_counts_df)
+
+    result_df = pd.concat(result)
+    return result_df
 
 # Function checks for duplicate data in a dataframe
 def count_duplicate_data(df):
@@ -43,3 +57,5 @@ def correlation(df):
     numeric_df = df.select_dtypes(include=['float64', 'int64'])
     corr = numeric_df.corr()
     return corr
+
+

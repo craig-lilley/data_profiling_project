@@ -1,12 +1,15 @@
 import sys
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout)
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QUrl
 import pandas as pd
 from backend.data_processing import read_data, count_missing_data
 import plotly.graph_objects as go
 from pyqtgraph import PlotWidget, GraphicsLayoutWidget 
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+import zmq
+import multiprocessing 
 
-
+    
 class DataProfilingWidget(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,9 +23,10 @@ class DataProfilingWidget(QWidget):
         self.drop_target.setAlignment(Qt.AlignmentFlag.AlignCenter) # Center the text
         self.layout.addWidget(self.drop_target)
         
-        self.plot_widget = QWidget()
-        self.layout.addWidget(self.plot_widget)
-        #print("plot_widget created:", self.plot_widget)
+        self.dash_view = QWebEngineView()
+        self.layout.addWidget(self.dash_view)
+        self.dash_view.load(QUrl('http://127.0.0.1:3000'))  
+
 
     def dragEnterEvent(self, event):
         #print("dragEnterEvent triggered")
@@ -44,34 +48,17 @@ class DataProfilingWidget(QWidget):
             event.ignore()
 
     def process_data_file(self, file_path):
-        # Implement your data profiling logic here
-        #print("process_data_file called")
         try:
-            df = read_data(file_path)  # Adjust based on your file type
-            missing = count_missing_data(df)
-            #print(type(missing), missing)
+            df = read_data(file_path) # Adapt the function name
 
-            fig = go.Figure(data=go.Heatmap(
-                z=missing,  # Pass the missing data matrix here
-                colorbar=dict(title="Missing Value Ratio")
-            ))
-            #print("fig created:", fig)
-            fig.update_layout(title="Missing Data Heatmap")
-            # Display the figure in the plot widget (using PyQtGraph)
-            layout = QVBoxLayout()
-            self.plot_widget.setLayout(layout)
-            
-            graphics_widget = GraphicsLayoutWidget(self.plot_widget) # Create a GraphicsLayoutWidget
-            layout.addWidget(graphics_widget)  # Add it to your plot_widget's layout
-            graphics_widget.addItem(fig)  # Add the Plotly figure to the GraphicsLayoutWidget
+            # ZeroMQ Setup
+            context = zmq.Context()
+            socket = context.socket(zmq.PUB)  
+            socket.bind("tcp://*:5556")  
 
-        
+            socket.send_json(df.to_json()) 
         except Exception as e:
             print(f"Error processing file: {e}")
     
 
-if __name__ == '__main__': 
-    app = QApplication(sys.argv)
-    widget = DataProfilingWidget()
-    widget.show()
-    sys.exit(app.exec())
+

@@ -1,30 +1,42 @@
 import dash
-from dash import html, dcc
-import pandas as pd  # Assuming you'll use Pandas for data
-import plotly.express as px
-from backend.data_processing import  count_missing_data
+from dash import dcc, html
+import plotly.figure_factory as ff
+import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+import zmq
+from backend.data_processing import count_missing_data
+from io import StringIO
 
-print("Dash Server Starting...")
+
 app = dash.Dash(__name__)
 
+# Setup ZeroMQ to receive DataFrame
+context = zmq.Context()
+socket = context.socket(zmq.SUB)
+socket.connect("tcp://localhost:5556")
+print("Connected to server")
+socket.setsockopt_string(zmq.SUBSCRIBE, '')
+
+# Receive and print test message
+test_message = socket.recv_string()
+#print(test_message)
+
+# Receive DataFrame from ZeroMQ
+df_json = socket.recv_json()
+#print(df_json)
+df = pd.read_json(StringIO(df_json))
+
+# Create a boolean DataFrame where True indicates a missing value
+missing_data = count_missing_data(df)
+missing_data = count_missing_data(df)
+missing_data_df = missing_data.to_frame().T  # Convert Series to DataFrame and transpose
+#print(missing_data)
+
+# Create a heatmap
+heatmap = ff.create_annotated_heatmap(z=missing_data_df.values, colorscale='Viridis', x=list(missing_data_df.columns), y=["Missing Values"], showscale=True)
+
 app.layout = html.Div(children=[
-    html.H1(children="My Data Profiling Dashboard"),
-
-    dcc.Graph(id='missing-data-heatmap')  # Placeholder for the heatmap
-])
-
-@app.callback(
-    dash.Output('missing-data-heatmap', 'figure'),
-    [dash.Input('some-trigger', 'value')]  # Placeholder trigger – we'll use ZeroMQ later
-)
-def update_heatmap(message):
-    # ... Load data if needed ...
-    df = pd.read_json(message)  # Example data source
-
-    # Assuming you have your missing data logic ready
-    missing_data = count_missing_data(df) 
-
-    fig = px.imshow(missing_data, color_continuous_scale='Viridis', 
-                    title="Missing Data Heatmap")
-    return fig
-
+    html.H1(children="Hello"),
+    html.P("This is a minimal Dash app for testing."),
+    dcc.Graph(figure=heatmap)])

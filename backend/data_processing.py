@@ -31,10 +31,9 @@ def investigate_dtype(df):
     result = []
 
     for col in df.columns:
-        types = df[col].map(type)
+        types = df[col].map(lambda x: type(x).__name__)
         type_counts = types.value_counts(normalize=True)
-        type_counts_df = type_counts.to_frame().T
-        type_counts_df.columns = [f"{col}_{col_type.__name__}" for col_type in type_counts_df.columns]
+        type_counts_df = pd.DataFrame(type_counts).T
         type_counts_df.index = [col]
         result.append(type_counts_df)
 

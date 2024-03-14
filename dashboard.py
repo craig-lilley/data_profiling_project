@@ -1,12 +1,13 @@
 import dash
-from dash import dcc, html, dash_table
+from dash import dcc, html
 import plotly.figure_factory as ff
-import plotly.graph_objects as go
+from plotly.graph_objects import Bar
 import pandas as pd
 import numpy as np
 import zmq
 from backend.data_processing import count_missing_data, investigate_dtype
 from io import StringIO
+import matplotlib.pyplot as plt
 
 
 
@@ -35,7 +36,40 @@ missing_data_df = missing_data.to_frame().T  # Convert Series to DataFrame and t
 #print(missing_data)
 
 investigate_dtype_df = investigate_dtype(df)
-data = investigate_dtype_df.to_dict('records')
+data_types = investigate_dtype_df.columns#
+print(investigate_dtype_df)
+# Define a color mapping for data types
+color_mapping = {
+    'int': 'blue',
+    'float': 'orange',
+    'str': 'purple',
+    'datetime': 'yellow',
+    'char': 'teal',
+    'other': 'brown',
+    'NoneType':'grey',
+}
+
+# Create a trace for each data type
+traces = []
+for dtype in data_types:
+    traces.append(Bar(
+        x=investigate_dtype_df.index,  # column names
+        y=investigate_dtype_df[dtype],  # proportion of dtype in each column
+        name=str(dtype),  # data type name
+        marker_color=color_mapping.get(dtype, 'grey')  # use color mapping, default to 'grey' if dtype not in mapping
+    ))
+
+# Create the layout
+layout = {
+    'barmode': 'stack',
+    'title': 'Data Types by Column'
+}
+
+# Create the figure
+figure = {
+    'data': traces,
+    'layout': layout
+}
 
 # Create a heatmap
 heatmap = ff.create_annotated_heatmap(z=missing_data_df.values, colorscale='Viridis', x=list(missing_data_df.columns), y=["Missing Values"], showscale=True)
@@ -44,7 +78,7 @@ app.layout = html.Div(children=[
     html.H1(children="Hello"),
     html.P("This is a minimal Dash app for testing."),
     dcc.Graph(figure=heatmap),
-    dash_table.DataTable(
-        id='table',
-        columns=[{"name": i, "id": i} for i in investigate_dtype_df.columns],
-        data=data)])
+    dcc.Graph(
+    id='graph',
+    figure=figure
+)])

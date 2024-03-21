@@ -14,6 +14,16 @@ def read_data(file_path):
     else:
         return 'Invalid file type'
 
+#checks the type of file and returns the file type
+def file_type(file_path):
+    if file_path.endswith('.csv'):
+        return 'CSV'
+    elif file_path.endswith('.xlsx') or file_path.endswith('.xls'):
+        return 'Excel'
+    elif file_path.endswith('.json'):
+        return 'JSON'
+    else:
+        return 'Invalid file type'
 
 # Function checks for missing data in a dataframe
 def count_missing_data(df):

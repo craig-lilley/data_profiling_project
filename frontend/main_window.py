@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout)
 from PyQt6.QtCore import Qt, QUrl
 import pandas as pd
-from backend.data_processing import read_data
+from backend.data_processing import read_data, file_type
 import plotly.graph_objects as go
 from pyqtgraph import PlotWidget, GraphicsLayoutWidget 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -51,6 +51,7 @@ class DataProfilingWidget(QWidget):
         try:
             #print(f"Processing file: {file_path}")
             df = read_data(file_path) # Adapt the function name
+            file_type_str = file_type(file_path) # Adapt the function name
             #print(f"Data: {df}")
 
             # ZeroMQ Setup
@@ -63,7 +64,7 @@ class DataProfilingWidget(QWidget):
             
             time.sleep(1)
             # Send a test message
-            socket.send_string("Test message")
+            socket.send_string(file_type_str)
               
             socket.send_json(df.to_json()) 
         except Exception as e:

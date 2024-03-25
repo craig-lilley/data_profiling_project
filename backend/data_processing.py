@@ -31,17 +31,24 @@ def count_missing_data(df):
     missing = df.isna().sum()
     return missing
 
-# Function checks for data types in a dataframe
-def check_dtype(df):
-    # check for data types
-    dtypes = df.dtypes
-    return dtypes
+# Function checks changes dtype if obviousely wrong dataframe
+def fix_numerical_dtype(df, threshold=0.9):
+    for col in df.columns:
+        # Try to convert the column to a numeric type
+        df_numeric = pd.to_numeric(df[col], errors='coerce')
+
+        # Check if a sufficient percentage of values were successfully converted
+        if df_numeric.notnull().mean() > threshold:
+            # Replace the original column with the converted column
+            df[col] = df_numeric
+
+    return df
 
 def investigate_dtype(df):
     result = []
 
     for col in df.columns:
-        types = df[col].map(lambda x: type(x).__name__)
+        types = df[col].map(lambda x: 'NaN' if pd.isna(x) else ('zero' if x == 0 else ('int' if isinstance(x, int) else ('float' if isinstance(x, float) else type(x).__name__))))
         type_counts = types.value_counts(normalize=True)
         type_counts_df = pd.DataFrame(type_counts).T
         type_counts_df.index = [col]
@@ -60,6 +67,10 @@ def count_unique_values(df):
     # check for unique values
     unique = df.nunique()
     return unique
+
+def describe(df):
+    data_desc = df.describe()
+    return data_desc
 
 # Function checks for the correlation between columns in a dataframe
 def correlation(df):

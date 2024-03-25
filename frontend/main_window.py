@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout)
 from PyQt6.QtCore import Qt, QUrl
 import pandas as pd
-from backend.data_processing import read_data, file_type
+from backend.data_processing import read_data, file_type, fix_numerical_dtype
 import plotly.graph_objects as go
 from pyqtgraph import PlotWidget, GraphicsLayoutWidget 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -50,7 +50,10 @@ class DataProfilingWidget(QWidget):
     def process_data_file(self, file_path):
         try:
             #print(f"Processing file: {file_path}")
-            df = read_data(file_path) # Adapt the function name
+            df = read_data(file_path)# Adapt the function name
+            print(df)
+            df = fix_numerical_dtype(df)
+            print(df)
             file_type_str = file_type(file_path) # Adapt the function name
             #print(f"Data: {df}")
 

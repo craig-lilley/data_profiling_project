@@ -1,13 +1,12 @@
 import dash
-import dash_table
-from dash import dcc, html
+from dash import dcc, html, dash_table
 import plotly.figure_factory as ff
 from plotly.graph_objects import Bar
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import zmq
-from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values
+from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values, describe
 from io import StringIO
 import matplotlib.pyplot as plt
 
@@ -126,6 +125,7 @@ data_types_color_mapping = {
     'char': 'teal',
     'other': 'brown',
     'NoneType':'grey',
+    'zero' :'green' 
 }
 
 # Create a trace for each data type
@@ -169,8 +169,24 @@ unique_values_bar_chart.update_layout(
     yaxis_title='Unique Count'
 )
 
+"""This code is for investigating the range of values in the dataframe."""
+# Describe the dataframe
+ranges = describe(df)
 
+# Add row labels as a column
+ranges['Row'] = ranges.index
 
+# Move the 'Row' column to the first position
+ranges = ranges[ ['Row'] + [ col for col in ranges.columns if col != 'Row' ] ]
+
+# Create a table for the ranges
+ranges_table = dash_table.DataTable(
+    id='ranges_table',
+    columns=[{"name": i, "id": i} for i in ranges.columns],
+    data=ranges.to_dict('records'),
+)
+
+"""This Code is for setting up the layout of the dashboard."""
 app.layout = html.Div(children=[
     html.H1(children='Data Profiling Dashboard'),
     characteristics_table,
@@ -179,4 +195,5 @@ app.layout = html.Div(children=[
     dcc.Graph(figure=missing_values_heatmap),
     dcc.Graph(id='graph', figure=data_types_bar_chart),
     dcc.Graph(id='unique_bar_chart', figure=unique_values_bar_chart),
+    ranges_table
     ])

@@ -33,11 +33,11 @@ This project is a final year dissertation project where the goal is to develop a
     - [] obvious formats (phone numbers, post codes)
     - [] user defined formats
   - [x] check for correlations
-- [] frontend
-  - [] data input
-    - [] drag and drop
-  - [] data visualisations
-    - [] rate data overall (based on missing, duplecates)
-    - [] show some observations about data (number of types, number of unique collumns/rows)
-    - [] color blind friendly
-    - [] high value visualisations following heuristic rules
+- [x] frontend
+  - [x] data input
+    - [x] drag and drop
+  - [x] data visualisations
+    - [x] rate data overall (based on missing, duplecates)
+    - [x] show some observations about data (number of types, number of unique collumns/rows)
+    - [x] color blind friendly
+    - [x] high value visualisations following heuristic rules

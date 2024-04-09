@@ -72,6 +72,27 @@ def describe(df):
     data_desc = df.describe()
     return data_desc
 
+def outliers(df):
+    outliers = {}
+    # Select only numeric columns
+    df_numeric = df.select_dtypes(include=[np.number])
+    
+    # Calculate IQR
+    Q1 = df_numeric.quantile(0.25)
+    Q3 = df_numeric.quantile(0.75)
+    IQR = Q3 - Q1
+    
+    # Define outliers
+    low_outliers = (df_numeric < (Q1 - 1.5 * IQR))
+    high_outliers = (df_numeric > (Q3 + 1.5 * IQR))
+    
+    
+    # Count outliers
+    outliers['Low Outliers'] = low_outliers.sum()
+    outliers['High Outliers'] = high_outliers.sum()
+    
+    return outliers
+
 # Function checks for the correlation between columns in a dataframe
 def correlation(df):
     numeric_df = df.select_dtypes(include=['float64', 'int64'])

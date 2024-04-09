@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import zmq
-from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values, describe
+from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values, describe, outliers
 from io import StringIO
 import matplotlib.pyplot as plt
 
@@ -173,18 +173,30 @@ unique_values_bar_chart.update_layout(
 # Describe the dataframe
 ranges = describe(df)
 
+# Calculate outliers
+outliers_counts = outliers(df)
+
+# Convert to DataFrame and transpose
+outliers_counts_df = pd.DataFrame(outliers_counts).T
+print(outliers_counts_df)
+
+ranges_outliers = pd.concat([ranges, outliers_counts_df])
+#print(ranges_outliers)
+
 # Add row labels as a column
-ranges['Row'] = ranges.index
+ranges_outliers['Row'] = ranges_outliers.index
 
 # Move the 'Row' column to the first position
-ranges = ranges[ ['Row'] + [ col for col in ranges.columns if col != 'Row' ] ]
+ranges_outliers = ranges_outliers[ ['Row'] + [ col for col in ranges_outliers.columns if col != 'Row' ] ]
+
 
 # Create a table for the ranges
 ranges_table = dash_table.DataTable(
     id='ranges_table',
-    columns=[{"name": i, "id": i} for i in ranges.columns],
-    data=ranges.to_dict('records'),
+    columns=[{"name": i, "id": i} for i in ranges_outliers.columns],
+    data=ranges_outliers.to_dict('records'),
 )
+
 
 """This Code is for setting up the layout of the dashboard."""
 app.layout = html.Div(children=[

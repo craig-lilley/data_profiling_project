@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
 import zmq
-from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values, describe, outliers
+from backend.data_processing import count_missing_data, investigate_dtype, count_duplicate_data, count_unique_values, describe, outliers, most_common_values
 from io import StringIO
 import matplotlib.pyplot as plt
 
@@ -47,12 +47,15 @@ characteristics_df = pd.DataFrame.from_records([characteristics])
 # Convert the DataFrame to a dictionary for the DataTable
 data_dict = characteristics_df.to_dict('records')
 
-# Create a DataTable
-characteristics_table = dash_table.DataTable(
-    id='characteristics_table',
-    columns=[{"name": i, "id": i} for i in characteristics_df.columns],
-    data=data_dict,
-)
+# Create a title and a table for the dataset characteristics
+characteristics_table = html.Div([
+    html.H3('Dataset Characteristics'),
+    dash_table.DataTable(
+        id='characteristics_table',
+        columns=[{"name": i, "id": i} for i in characteristics_df.columns],
+        data=data_dict,
+    )
+])
 
 
 """This Code provides a sample of the data in the dataframe."""
@@ -62,12 +65,15 @@ df_sample = df.head()
 # Convert the dataframe to a dictionary for the DataTable
 data_dict = df_sample.to_dict('records')
 
-# Create a DataTable
-data_table = dash_table.DataTable(
-    id='table',
-    columns=[{"name": i, "id": i} for i in df_sample.columns],
-    data=data_dict,
-)
+# Create a title and a table for the sample data
+data_table = html.Div([
+    html.H3('Sample of Data'),
+    dash_table.DataTable(
+        id='table',
+        columns=[{"name": i, "id": i} for i in df_sample.columns],
+        data=data_dict,
+    )
+])
 
 
 """This Code is for investigating and visualiseing the missing data in the dataframe."""
@@ -169,7 +175,21 @@ unique_values_bar_chart.update_layout(
     yaxis_title='Unique Count'
 )
 
-"""This code is for investigating the range of values in the dataframe."""
+# Call the function to get the DataFrame of most common values
+most_common_values_df = most_common_values(df, n=1)
+
+# Create a title and a table for the most common values
+most_common_values_table = html.Div([
+    html.H3('Most Common Values'),
+    dash_table.DataTable(
+        id='most_common_values_table',
+        columns=[{"name": i, "id": i} for i in most_common_values_df.columns],
+        data=most_common_values_df.to_dict('records'),
+    )
+])
+
+
+"""This code is for investigating the range of values in the dataframe and outliers."""
 # Describe the dataframe
 ranges = describe(df)
 
@@ -190,12 +210,15 @@ ranges_outliers['Row'] = ranges_outliers.index
 ranges_outliers = ranges_outliers[ ['Row'] + [ col for col in ranges_outliers.columns if col != 'Row' ] ]
 
 
-# Create a table for the ranges
-ranges_table = dash_table.DataTable(
-    id='ranges_table',
-    columns=[{"name": i, "id": i} for i in ranges_outliers.columns],
-    data=ranges_outliers.to_dict('records'),
-)
+# Create a title and a table for the ranges
+ranges_table = html.Div([
+    html.H3('Ranges and Outliers'),
+    dash_table.DataTable(
+        id='ranges_table',
+        columns=[{"name": i, "id": i} for i in ranges_outliers.columns],
+        data=ranges_outliers.to_dict('records'),
+    )
+])
 
 
 """This Code is for setting up the layout of the dashboard."""
@@ -207,5 +230,6 @@ app.layout = html.Div(children=[
     dcc.Graph(figure=missing_values_heatmap),
     dcc.Graph(id='graph', figure=data_types_bar_chart),
     dcc.Graph(id='unique_bar_chart', figure=unique_values_bar_chart),
+    most_common_values_table,
     ranges_table
     ])

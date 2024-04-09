@@ -93,6 +93,21 @@ def outliers(df):
     
     return outliers
 
+def most_common_values(df, n=1):
+    # Create a dictionary where the keys are the column names and the values are DataFrames containing the most common values and their counts
+    most_common_dict = {col: df[col].value_counts().head(n).reset_index().rename(columns={'index': 'Value', col: 'Count'}) for col in df.columns}
+
+    # Convert the dictionary to a DataFrame
+    most_common_df = pd.concat(most_common_dict, names=['Column', 'Rank'])
+
+    # Reset the index
+    most_common_df.reset_index(inplace=True)
+
+    # Subtract 1 from the 'Rank' column to get the rank of the most common values (0 is the most common, 1 is the second most common, etc.)
+    most_common_df['Rank'] -= 1
+
+    return most_common_df
+
 # Function checks for the correlation between columns in a dataframe
 def correlation(df):
     numeric_df = df.select_dtypes(include=['float64', 'int64'])
